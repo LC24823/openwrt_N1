@@ -1,73 +1,73 @@
-  姓名       : 新包装         
+name: packit new
 
-  在…上       :         
-  重新部署                :
-  工作流程                :
-    投入                :
-      嘘                :
-        描述               : 'SSH与行动的联系'
-        必需的              : 假的
-        违约             : 'false'
-      set_54x            :
-        描述                         : "KERNEL: 5.4.x / none"
-        必需的                         : 假的
-        违约                         : "none"
-      set_510x                         :
-        描述                         : "KERNEL: 5.10.x / none"
-        必需的                         : 假的
-        违约                         : "none"
-      set_515x                         :
-        描述                        : "KERNEL: 5.15.x / none"
-        必需的                       : 假的
-        违约                      : "none"
-      set_61x                     :
-        描述                    : "KERNEL: 6.1.x / none"
-        必需的                   : 假的
-        违约                  : "false"
-      set_66x                 :
-        描述                : "KERNEL: 6.6.x / none"
-        必需的               : 假的
-        违约              : "false"
-      塞特_韦尔             :
-        描述                : "VER: 25.01.01 / ..."
-        必需的                : 假的
-        违约                : "25.01.01"
-      上传_固件                :
-        描述                : "是否要上传固件。"
-        必需的                : 假的
-        违约                : "true"
-      释放_固件                :
-        描述                : "是否发布固件。"
-        必需的                : 假的
-        违约                : "true"
-      上传_rgn                :
-        描述                : "是否要上传到一个驱动器。"
-        必需的                : 假的
-        违约                : "false"
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+      set_54x:
+        description: "KERNEL: 5.4.x / none"
+        required: false
+        default: "none"
+      set_510x:
+        description: "KERNEL: 5.10.x / none"
+        required: false
+        default: "none"
+      set_515x:
+        description: "KERNEL: 5.15.x / none"
+        required: false
+        default: "none"
+      set_61x:
+        description: "KERNEL: 6.1.x / none"
+        required: false
+        default: "false"
+      set_66x:
+        description: "KERNEL: 6.6.x / none"
+        required: false
+        default: "false"
+      set_ver:
+        description: "VER: 25.01.01 / ..."
+        required: false
+        default: "25.01.01"
+      upload_firmware:
+        description: "whether to upload firmware."
+        required: false
+        default: "true"
+      release_firmware:
+        description: "whether to release firmware."
+        required: false
+        default: "true"
+      upload_rclone:
+        description: "whether to upload to OneDrive."
+        required: false
+        default: "false"
 
-  环境       :        
-  出版物    :Https           : //吉特布网/联合国粮食及农业研究所
-  救济处         : 主人
-  红细胞       : Https : //焦图布...../基苏亨特/开放/下载/释放/下载/罗茨/开放式武器-64个通用根。
-  角角       : Https : //github.com/kissyouhunter/Openwrt_X86-Openwrt_N1-Armbian_N1/releases/download/kernel_stable
-  上传_b_dir       : 假的
-  服务机_sc基       : 真实的
-  TZ       : 亚洲/上海
+env:
+  REPO_URL: https://github.com/unifreq/openwrt_packit
+  REPO_BRANCH: master
+  ROOTFS_URL: https://github.com/kissyouhunter/openwrt_N1/releases/download/rootfs/openwrt-armvirt-64-generic-rootfs.tar.gz
+  KERNEL_URL: https://github.com/kissyouhunter/Openwrt_X86-Openwrt_N1-Armbian_N1/releases/download/kernel_stable
+  UPLOAD_BIN_DIR: false
+  SERVERCHAN_SCKEY: true
+  TZ: Asia/Shanghai
 
- 乔布斯       :
-  建造      :
-    逃跑     : 乌本图-22.04
+jobs:
+  build:
+    runs-on: ubuntu-22.04
 
-    台阶    :
-    - 姓名   : 电报机
-      跑  : |
-        CAT/CPC/CPRIN/GREP名称|卡普-F2-D:液处理器;
-        CAT/CPC/CPRIN信息系统|GREP"CPU核心"横跨;
+    steps:
+    - name: telegrame_bot
+      run: |
+        cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
+        cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
         sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
         CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
-        RM-射频CPU
+        rm -rf CPU
         if [[ "${SERVERCHAN_SCKEY}" == "true" ]]; then
-          柯尔-K---数据访问="${{秘密】--数据"文本=用户:
+          curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 主人：
           您正在使用kissyouhunter仓库 {CPU型号为 [ ${CPUNAME} ] 核心数 为 [ ${CPUCORES} ] 线程数为 [ $(nproc) ]的机器} 打包 ${{ github.event.inputs.set_54x }} ${{ github.event.inputs.set_510x }} ${{ github.event.inputs.set_515x }} ${{ github.event.inputs.set_61x }} ${{ github.event.inputs.set_66x }} 固件,请耐心等待...... 😋" "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage"
         fi
 
